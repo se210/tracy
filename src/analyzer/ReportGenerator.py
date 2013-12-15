@@ -84,7 +84,7 @@ class ReportGenerator(object):
     # Chart appearance
     if pylab:
       pylab.subplots_adjust(hspace = .5)
-      pylab.rc("text", fontsize = 7)
+      pylab.rc("font", size = 7)
       pylab.rc("xtick", labelsize= 7)
       pylab.rc("ytick", labelsize= 7)
       pylab.rc("axes", labelsize= 7)
@@ -158,7 +158,7 @@ class ReportGenerator(object):
       
   def createGeneralStatisticsTable(self):
     t = Report.Table(["Property", "Value"])
-      
+
     duration = self.frames[-1].endTime - self.frames[0].startTime
     t.addRow("Events", len(self.trace.events))
     t.addRow("Frames", len(self.frames))
