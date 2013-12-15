@@ -107,11 +107,15 @@ def generateReport(project, trace, traceFileName, path, format):
   # Add some general information first
   section = g.report.create(Report.Section, "General statistics")
   table   = g.createGeneralStatisticsTable()
+  auxiliaryTable = g.createAuxiliaryStatisticsTable()
+  histogramTable = g.createCallHistogramTable()
   
   if traceFileName:
     table.addRow("File name", traceFileName)
 
   section.add(table)
+  section.add(auxiliaryTable)
+  section.add(histogramTable)
   
   # Add a section about the used render targets
   addRenderTargetSection(g)

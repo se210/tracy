@@ -171,7 +171,47 @@ class ReportGenerator(object):
     t.addRow("Average FPS", "%.02f" % averageFps)
     t.addRow("Average calls per frame", "%.02f" % averageCalls)
     return t
+
+
+  # YUZI ADDED
+  def createAuxiliaryStatisticsTable(self):
+    yNumTriangles = 0
+    yTexelUploads = 0
+    yRasterizerPixels = 0
+    yAvgTriangleSize = 0.0
+
+    for event in self.trace.events:
+      if event.sensorData.get("rasterizer_pixels", 0):
+        yRasterizerPixels += 1
+      if event.sensorData.get("average_triangle_size", 0):
+        yAvgTriangleSize = 4.3
+      if event.sensorData.get("triangles_in", 0):
+        yNumTriangles += event.sensorData["triangles_in"]
+      if event.sensorData.get("texel_uploads", 0):
+        yTexelUploads += event.sensorData["texel_uploads"]
       
+    t = Report.Table(["Property", "Value"])
+    t.addRow("Total triangles submitted", yNumTriangles)
+    t.addRow("Number of triangles submitted per frame", float(yNumTriangles) / len(self.frames))
+    t.addRow("Total texel uploads", yTexelUploads)
+    t.addRow("Number of uploads per frame", float(yTexelUploads) / len(self.frames))
+    t.addRow("Rasterizer pixels", yRasterizerPixels)
+    t.addRow("Average triangle size", yAvgTriangleSize)
+
+    return t
+
+  # YUZI ADDED
+  def createCallHistogramTable(self):
+    t = Report.Table(["Call", "# of Calls"])
+    
+    hist = TraceOperations.calculateCallHistogram(self.trace)
+    values = [(count, name) for name, count in hist.items()]
+    for i, value in enumerate(sorted(values, reverse = True)):
+       count, name = value
+       t.addRow(name, count)
+
+    return t
+    
   def createPlot(self, title, xAxis, yAxis, id = 0, style = "line"):
     # See if there's anything to plot
     for value in yAxis:
